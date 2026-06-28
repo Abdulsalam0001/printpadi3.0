@@ -1,0 +1,7 @@
+{
+  "name": "printpadi",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

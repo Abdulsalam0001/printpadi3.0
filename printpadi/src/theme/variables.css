@@ -1,0 +1,141 @@
+/* ============================================================
+   PrintPadi – Ionic Theme Variables
+   Exact port of app/globals.css from the Next.js project
+   ============================================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
+
+/* ── Design tokens (mirrors :root in globals.css exactly) ── */
+:root {
+  /* Brand colours */
+  --pp-background:  #ffffff;
+  --pp-foreground:  #101010;
+  --pp-black:       #101010;
+  --pp-gray-1:      #E6E7E9;
+  --pp-gray-2:      #AAAAAA4D;   /* rgba(170,170,170,0.30) */
+  --pp-gray-3:      #AAAAAA;
+  --pp-gray-4:      #808080;
+  --pp-gray-5:      #6A7282;
+  --pp-gray-6:      #F3F4F6;
+  --pp-active-link: #9810FA;
+
+  /* Typography */
+  --pp-font-display: 'Bricolage Grotesque', sans-serif;
+  --pp-font-body:    'Public Sans', sans-serif;
+
+  /* Shadows (from globals.css) */
+  --pp-box-shadow:
+    0px 1.11px 2.23px -1.11px rgba(0, 0, 0, 0.1),
+    0px 1.11px 3.34px 0px   rgba(0, 0, 0, 0.1);
+  --pp-cart-shadow:
+    0px 1.11px 3.34px 0px #0000001A;
+
+  /* ── Ionic overrides – map brand tokens into Ionic CSS vars ── */
+  --ion-background-color:             var(--pp-background);
+  --ion-background-color-rgb:         255, 255, 255;
+  --ion-text-color:                   var(--pp-foreground);
+  --ion-text-color-rgb:               16, 16, 16;
+
+  /* Tab bar */
+  --ion-tab-bar-background:           var(--pp-background);
+  --ion-tab-bar-border-color:         var(--pp-gray-1);
+  --ion-tab-bar-color:                var(--pp-gray-3);
+  --ion-tab-bar-color-selected:       var(--pp-foreground);
+
+  /* Toolbar (we build our own; disable ionic's default) */
+  --ion-toolbar-background:           var(--pp-foreground);
+  --ion-toolbar-color:                var(--pp-background);
+
+  /* Safe-area helpers */
+  --ion-safe-area-top:    env(safe-area-inset-top);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── Global resets ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+ion-app {
+  font-family: var(--pp-font-display);
+  background:  var(--pp-background);
+  color:       var(--pp-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Public Sans utility class (mirrors font-sans in Tailwind config) */
+.font-sans {
+  font-family: var(--pp-font-body) !important;
+}
+
+/* ── Utility classes (direct ports of the Tailwind globals) ── */
+
+/* Section gradient – used by ContainerWithGradient */
+.section-gradient {
+  background: #999999;
+  background: linear-gradient(
+    180deg,
+    rgba(176, 176, 176, 1) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+
+/* Generic card shadow */
+.box-shadow {
+  box-shadow: var(--pp-box-shadow);
+}
+
+/* Cart item card shadow */
+.cart-box-shadow {
+  box-shadow: var(--pp-cart-shadow);
+}
+
+/* ── Ionic component overrides ── */
+
+ion-content {
+  --background: var(--pp-background);
+  --color:      var(--pp-foreground);
+}
+
+/* Tab bar */
+ion-tab-bar {
+  height: 60px;
+  border-top: 1px solid var(--pp-gray-1);
+  padding: 0 23px;
+}
+
+ion-tab-button {
+  --color:          var(--pp-gray-3);
+  --color-selected: var(--pp-foreground);
+  font-family: var(--pp-font-display);
+}
+
+ion-tab-button ion-label {
+  font-size:   10px;
+  font-weight: 300;
+  text-transform: capitalize;
+  margin-top: 2px;
+}
+
+ion-tab-button ion-icon {
+  font-size: 24px;
+}
+
+/* Remove default Ionic header */
+ion-header {
+  box-shadow: none;
+}
+
+/* ── Scrollbar hiding (mirrors Next.js hidden scrollbars) ── */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width:    none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
