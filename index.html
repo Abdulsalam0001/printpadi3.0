@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PrintPadi</title>
+
+  <!-- Ionic -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+  <!-- Ionicons -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
+
+  <style>
+    /* ─── Design tokens from globals.css ─── */
+    :root {
+      --background:    #ffffff;
+      --foreground:    #101010;
+      --black:         #101010;
+      --gray-1:        #E6E7E9;
+      --gray-2:        rgba(170,170,170,0.30);
+      --gray-3:        #AAAAAA;
+      --gray-4:        #808080;
+      --gray-5:        #6A7282;
+      --gray-6:        #F3F4F6;
+      --active-link:   #9810FA;
+      --ion-background-color: #ffffff;
+      --ion-text-color: #101010;
+      --ion-tab-bar-background: #ffffff;
+      --ion-tab-bar-border-color: transparent;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+    body, ion-app { font-family: 'Bricolage Grotesque', sans-serif; background: #fff; }
+    .font-sans { font-family: 'Public Sans', sans-serif; }
+
+    /* ─── Ionic overrides ─── */
+    ion-content { --background: #fff; }
+    ion-tab-bar {
+      --background: #fff;
+      border-top: none;
+      box-shadow: 0 -1px 0 #E6E7E9;
+      padding: 0 22px;
+    }
+    ion-tab-button {
+      --color: #AAAAAA;
+      --color-selected: #101010;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+    }
+    ion-tab-button ion-label { font-size: 10px; font-weight: 300; }
+
+    /* ─── Top nav (black bar) ─── */
+    .top-nav {
+      background: #101010;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-nav .logo { height: 24px; width: auto; filter: invert(0); }
+    .top-nav .search-box {
+      flex: 1;
+      max-width: 154px;
+      background: rgba(170,170,170,0.30);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      padding: 5px 10px 5px 12px;
+      gap: 4px;
+    }
+    .top-nav .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #AAAAAA;
+      font-size: 10px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      flex: 1;
+      min-width: 0;
+    }
+    .top-nav .search-box input::placeholder { color: #AAAAAA; }
+    .top-nav .search-btn {
+      background: #101010;
+      border-radius: 50%;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+    }
+    .top-nav .flag { width: 25px; height: 25px; border-radius: 50%; object-fit: cover; margin-left: auto; flex-shrink: 0; }
+
+    /* Back button in top-nav */
+    .back-btn {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.30);
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ─── Category pills (home nav) ─── */
+    .cat-bar {
+      background: #fff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cat-bar a {
+      font-size: 14px;
+      font-weight: 300;
+      color: #101010;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .cat-bar a.active { font-weight: 600; }
+
+    /* ─── Offers bar ─── */
+    .offers-bar {
+      background: #E6E7E9;
+      padding: 12px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .offers-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      overflow-x: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .offers-links::-webkit-scrollbar { display: none; }
+    .offers-links a {
+      font-size: 12px;
+      font-weight: 400;
+      color: #808080;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .offers-links a.active { color: var(--active-link); }
+    .services-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .services-pills::-webkit-scrollbar { display: none; }
+    .service-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      border-radius: 5px;
+      padding: 3px 5px;
+      font-size: 8px;
+      font-weight: 500;
+      color: #101010;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .service-pill img { width: 16px; height: 16px; object-fit: contain; }
+
+    /* ─── Carousel / banner ─── */
+    .carousel-wrap { position: relative; }
+    .carousel-slides { display: flex; overflow: hidden; border-radius: 20px; }
+    .carousel-slide {
+      flex-shrink: 0;
+      width: 100%;
+      height: 115px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+    .carousel-slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.75); }
+    .carousel-slide .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.20); }
+    .carousel-content {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      max-width: 162px;
+    }
+    .carousel-content h2 { font-size: 8px; font-weight: 600; color: #fff; line-height: 1.4; }
+    .carousel-dots {
+      position: absolute;
+      bottom: 9px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .carousel-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0.5;
+      transition: opacity .2s;
+    }
+    .carousel-dot.active { opacity: 1; }
+    .shop-btn {
+      display: inline-block;
+      margin-top: 6px;
+      background: #101010;
+      color: #fff;
+      font-size: 7.95px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ─── Section gradient container ─── */
+    .section-gradient {
+      background: linear-gradient(180deg, rgba(176,176,176,1) 0%, rgba(255,255,255,1) 100%);
+      min-height: 30vh;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .section-gradient .faint-logo-tr {
+      position: absolute; top: 0; right: 0;
+      width: 80px; opacity: 0.4; pointer-events: none;
+    }
+    .section-gradient .faint-logo-bl {
+      position: absolute; bottom: 0; left: 0;
+      width: 80px; opacity: 0.4; pointer-events: none;
+    }
+    .section-header {
+      padding: 16px 16px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .section-header-text { color: #fff; }
+    .section-header-text h3 { font-size: 15px; font-weight: 500; text-transform: capitalize; }
+    .section-header-text p { font-family: 'Public Sans', sans-serif; font-size: 8px; font-weight: 400; text-transform: capitalize; }
+    .section-header .arrow-btn { background: transparent; border: none; cursor: pointer; color: #fff; padding: 0; }
+
+    /* ─── Deals row (3-card horizontal scroll) ─── */
+    .deals-row {
+      margin-top: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding: 0 16px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .deals-row::-webkit-scrollbar { display: none; }
+    .deal-card-wrap {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      width: calc((100% - 2*15px) / 3);
+      flex: 0 0 calc((100% - 2*15px) / 3);
+    }
+
+    /* ─── Product card (secondary / small) ─── */
+    .product-card-sec {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card-sec .img-wrap {
+      width: 100%;
+      padding-top: 100%;
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #F3F4F6;
+    }
+    .product-card-sec .img-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .product-card-sec .img-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 6px 8px;
+    }
+    .customizable-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--active-link);
+      color: #fff;
+      font-weight: 500;
+      font-size: 7px;
+      height: 12px;
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .heart-btn-sec {
+      background: #fff;
+      border-radius: 50%;
+      border: 0.15px solid #AAAAAA;
+      padding: 4.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      pointer-events: all;
+    }
+    .heart-btn-sec svg { width: 12px; height: 12px; }
+    .product-card-sec .card-info { padding: 4px 4px 6px; display: flex; flex-direction: column; gap: 4px; }
+    .product-card-sec .name-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .product-card-sec .name-row h3 { font-size: 10px; font-weight: 400; text-transform: capitalize; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex: 1; min-width: 0; line-height: 1.3; }
+    .product-card-sec .flag-img { width: 16px; height: 16px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .product-card-sec .price-row { display: flex; align-items: center; justify-content: space-between; }
+    .product-card-sec .price { font-family: 'Public Sans', sans-serif; font-size: 11px; font-weight: 600; }
+    .product-card-sec .moq { color: #0000FF; font-family: 'Public Sans', sans-serif; font-size: 9px; font-style: italic; font-weight: 200; }
+
+    /* ─── Product card (primary / large) ─── */
+    .product-card-pri {
+      width: 100%;
+      border: 1.37px solid #F3F4F6;
+      border-radius: 15px;
+      position: relative;
+    }
+    .product-card-pri .img-wrap {
+      position: relative;
+      height: 174px;
+      overflow: hidden;
+      border-radius: 15px 15px 0 0;
+    }
+    .product-card-pri .img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .product-card-pri .img-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 10px 8px;
+    }
+    .heart-btn-pri {
+      background: #fff;
+      border-radius: 50%;
+      border: none;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .heart-btn-pri svg { width: 14px; height: 14px; }
+    .product-card-pri .card-info { padding: 15px 12px; display: flex; flex-direction: column; gap: 8px; }
+    .product-card-pri h3 { font-size: 15px; font-weight: 500; text-transform: capitalize; height: 44px; line-height: 22px; overflow: hidden; }
+    .product-card-pri .stock { font-family: 'Public Sans', sans-serif; font-size: 12px; font-style: italic; }
+    .stock-green { color: #16a34a; }
+    .stock-amber { color: #f59e0b; }
+    .stock-red   { color: #dc2626; }
+    .product-card-pri .bottom-row { display: flex; align-items: center; justify-content: space-between; }
+    .product-card-pri .price { font-family: 'Public Sans', sans-serif; font-size: 19px; font-weight: 700; }
+    .add-cart-btn {
+      background: #101010;
+      color: #fff;
+      border-radius: 50%;
+      border: none;
+      padding: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .add-cart-btn svg { width: 16px; height: 16px; }
+
+    /* Linked wrapper for cards */
+    .card-link-wrap { position: relative; display: block; text-decoration: none; color: inherit; }
+
+    /* ─── Explore latest grid ─── */
+    .explore-section { padding: 0 16px; margin-top: 16px; }
+    .explore-section .sec-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 44px; }
+    .explore-section .sec-header h2 { font-size: 14px; font-weight: 400; text-transform: capitalize; }
+    .view-all-link { color: var(--active-link); font-family: 'Public Sans', sans-serif; font-weight: 500; font-size: 12px; text-decoration: none; }
+    .explore-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 0; justify-items: center; }
+    .explore-item { display: flex; flex-direction: column; gap: 14px; text-decoration: none; color: inherit; }
+    .explore-item img { width: 175px; height: 182px; object-fit: cover; border-radius: 8px; }
+    .explore-item h4 { font-size: 12px; font-weight: 500; text-transform: capitalize; }
+
+    /* ─── Products grid (2-col) ─── */
+    .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 16px; }
+
+    /* ─── Page padding bottom for tabs ─── */
+    .page-content { padding-bottom: 80px; }
+
+    /* ─── Cart page ─── */
+    .cart-tabs { display: flex; gap: 0; background: #F3F4F6; border-radius: 34px; padding: 8px 10px; margin: 0 0 16px; }
+    .cart-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-radius: 30px;
+      padding: 8px 0;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #99A1AF;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .cart-tab-btn.active { background: #101010; color: #fff; }
+
+    .cart-item-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border: 1.4px solid #F3F4F6;
+      border-radius: 11px;
+      padding: 20px 14px;
+      box-shadow: 0px 1.11px 3.34px 0px rgba(0,0,0,0.10);
+      margin-bottom: 16px;
+    }
+    .cart-item-card img { width: 106px; height: 106px; border-radius: 11px; object-fit: cover; flex-shrink: 0; }
+    .cart-item-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .cart-item-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .cart-item-name { font-size: 15px; font-weight: 500; color: #1E2939; }
+    .trash-btn { background: transparent; border: none; padding: 6px; border-radius: 8px; cursor: pointer; color: #71717a; }
+    .qty-price { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 4px; }
+    .unit-price-info { font-family: 'Public Sans', sans-serif; font-size: 10px; font-style: italic; color: #808080; }
+    .total-price { font-family: 'Bricolage Grotesque', sans-serif; font-size: 15px; font-weight: 600; color: #1E2939; }
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 0.2px solid #101010;
+      border-radius: 30px;
+      padding: 6px 12px;
+      max-width: 144px;
+      width: 100%;
+    }
+    .qty-controls button { background: transparent; border: none; cursor: pointer; display: flex; align-items: center; }
+    .qty-value { font-size: 15px; font-weight: 400; min-width: 28px; text-align: center; }
+
+    .cart-subtotal {
+      border: 1.4px solid #F3F4F6;
+      border-radius: 11px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cart-subtotal span { font-family: 'Public Sans', sans-serif; font-size: 12px; color: #808080; }
+    .cart-subtotal strong { font-size: 15px; font-weight: 600; }
+    .checkout-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      background: #101010;
+      color: #fff;
+      border-radius: 999px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 16px;
+      text-transform: capitalize;
+      text-decoration: none;
+    }
+
+    .empty-cart {
+      border: 1.4px solid #F3F4F6;
+      border-radius: 11px;
+      padding: 32px 14px;
+      text-align: center;
+    }
+    .empty-cart p { font-family: 'Public Sans', sans-serif; font-size: 14px; color: #808080; }
+
+    /* ─── Explore page ─── */
+    .explore-search-bar {
+      background: #fff;
+      border: 1px solid #D9D9D9;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      padding: 4px 4px 4px 16px;
+      height: 48px;
+    }
+    .explore-search-bar input { flex: 1; border: none; outline: none; font-size: 14px; color: #404040; background: transparent; font-family: 'Public Sans', sans-serif; }
+    .explore-search-bar input::placeholder { color: #B0B0B0; }
+    .explore-search-btn { width: 36px; height: 36px; background: #101010; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .explore-cats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 12px; margin-top: 20px; }
+    .explore-cat-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; text-decoration: none; color: inherit; }
+    .explore-cat-img { width: 76px; height: 76px; border-radius: 50%; background: #f5f5f5; overflow: hidden; border: 1px solid #e5e5e5; display: flex; align-items: center; justify-content: center; }
+    .explore-cat-img img { width: 100%; height: 100%; object-fit: cover; }
+    .explore-cat-label { font-size: 11px; font-weight: 400; text-transform: capitalize; color: #101010; line-height: 1.15; }
+
+    /* ─── Design page ─── */
+    .design-page { max-width: 448px; margin: 0 auto; padding: 40px 16px 112px; }
+    .design-page h1 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; font-weight: 600; color: #101010; }
+    .design-page p { margin-top: 12px; font-size: 14px; color: #6A7282; font-family: 'Public Sans', sans-serif; }
+    .design-btns { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .design-btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      border-radius: 999px;
+      background: #101010;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .design-btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      border-radius: 999px;
+      background: #fff;
+      color: #101010;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid #101010;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* ─── Profile page ─── */
+    .profile-page { padding: 0 0 112px; }
+    .profile-header-user { padding: 24px 16px; display: flex; align-items: center; gap: 12px; }
+    .avatar-circle {
+      width: 52px; height: 52px; border-radius: 50%; background: #E6E7E9;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .user-info h2 { font-size: 16px; font-weight: 600; }
+    .user-info p { font-size: 12px; color: #808080; font-family: 'Public Sans', sans-serif; }
+    .profile-accordion { border-top: 1px solid #E6E7E9; }
+    .acc-section { border-bottom: 1px solid #E6E7E9; }
+    .acc-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; cursor: pointer; gap: 12px;
+    }
+    .acc-header-left { display: flex; align-items: center; gap: 12px; }
+    .acc-icon { width: 28px; display: flex; justify-content: center; color: #101010; flex-shrink: 0; }
+    .acc-title { font-size: 15px; font-weight: 500; }
+    .acc-chevron { color: #6A7282; transition: transform .2s; }
+    .acc-chevron.open { transform: rotate(180deg); }
+    .acc-body { border-top: 1px solid #E6E7E9; background: rgba(243,244,246,0.60); padding: 8px; }
+    .sub-link {
+      display: flex; align-items: center; gap: 8px; padding: 10px 8px;
+      text-decoration: none; color: #101010; font-size: 14px; border-radius: 8px;
+    }
+    .sub-link:hover { background: #f5f5f5; }
+    .social-row { display: flex; align-items: center; gap: 16px; padding: 12px 8px; }
+    .social-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #F3F4F6; }
+
+    /* ─── Service pages ─── */
+    .service-page { padding: 0 16px 80px; }
+    .service-hero { background: #101010; border-radius: 16px; overflow: hidden; position: relative; margin-bottom: 24px; min-height: 160px; display: flex; align-items: flex-end; padding: 20px; }
+    .service-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+    .service-hero-text { position: relative; z-index: 1; color: #fff; }
+    .service-hero-text h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .service-hero-text p { font-size: 13px; font-weight: 300; font-family: 'Public Sans', sans-serif; }
+
+    .form-label { font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; color: #101010; }
+    .form-input {
+      width: 100%;
+      border: 1px solid #E6E7E9;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: #fff;
+      color: #101010;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-input:focus { border-color: #101010; }
+    .form-group { margin-bottom: 16px; }
+    .submit-btn {
+      width: 100%;
+      height: 48px;
+      background: #101010;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    /* ─── Search page ─── */
+    .search-results { padding: 0 16px; }
+    .search-empty { text-align: center; padding: 48px 0; color: #808080; font-size: 14px; font-family: 'Public Sans', sans-serif; }
+    .search-tag-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; -ms-overflow-style: none; scrollbar-width: none; }
+    .search-tag-row::-webkit-scrollbar { display: none; }
+    .tag-pill { flex-shrink: 0; padding: 5px 12px; border-radius: 999px; font-size: 12px; border: 1px solid #E6E7E9; background: #fff; cursor: pointer; font-family: 'Public Sans', sans-serif; color: #808080; }
+    .tag-pill.active { background: #101010; color: #fff; border-color: #101010; }
+
+    /* ─── Cart summary / checkout ─── */
+    .checkout-section { padding: 24px 16px 100px; }
+    .checkout-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+    .checkout-card { border: 1.4px solid #F3F4F6; border-radius: 11px; padding: 16px; margin-bottom: 16px; }
+    .checkout-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+    .checkout-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+    .checkout-row span { color: #808080; font-family: 'Public Sans', sans-serif; }
+    .checkout-total { font-size: 17px; font-weight: 700; }
+
+    /* ─── Drawer / modal sheet ─── */
+    .drawer-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.40);
+      display: none;
+      align-items: flex-end;
+    }
+    .drawer-overlay.open { display: flex; }
+    .drawer-sheet {
+      width: 100%;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      padding: 20px 16px 40px;
+      max-height: 80vh;
+      overflow-y: auto;
+      font-family: 'Bricolage Grotesque', sans-serif;
+    }
+    .drawer-handle { width: 36px; height: 4px; background: #E6E7E9; border-radius: 2px; margin: 0 auto 16px; }
+    .drawer-sheet h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; text-transform: capitalize; }
+
+    /* ─── Toast ─── */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #101010;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity .3s;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ─── Utilities ─── */
+    .mt-2 { margin-top: 8px; }
+    .mt-4 { margin-top: 16px; }
+    .mt-6 { margin-top: 24px; }
+    .mt-10 { margin-top: 40px; }
+    .mb-4 { margin-bottom: 16px; }
+    .px-4 { padding-left: 16px; padding-right: 16px; }
+    .hidden { display: none !important; }
+    .capitalize { text-transform: capitalize; }
+    ion-content::part(scroll) { padding-bottom: 80px; }
+
+    /* ─── Status bar mock (explore page) ─── */
+    .status-bar { display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 4px; font-size: 15px; font-weight: 500; color: #101010; }
+
+    /* ─── ongoing order card ─── */
+    .order-card { display: flex; flex-direction: column; gap: 4px; border: 1.4px solid #F3F4F6; border-radius: 11px; padding: 20px 14px; box-shadow: 0px 1.11px 3.34px 0px rgba(0,0,0,0.10); }
+    .order-top { display: flex; align-items: center; justify-content: space-between; }
+    .order-id { font-family: 'Public Sans', sans-serif; font-size: 10px; color: #808080; }
+    .order-amount { font-family: 'Bricolage Grotesque', sans-serif; font-size: 16px; font-weight: 700; color: #1E2939; }
+    .status-badge { background: #DBEAFE; color: #1447E6; border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 500; display: inline-flex; }
+    .track-btn { border: 1px solid #E5E7EB; border-radius: 999px; padding: 6px 16px; font-size: 12px; font-weight: 500; background: #fff; cursor: pointer; text-decoration: none; color: #101010; display: inline-flex; align-items: center; }
+
+    /* ─── Favorites page ─── */
+    .fav-page { padding: 16px 16px 100px; }
+    .fav-page h1 { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    .no-favs { text-align: center; padding: 40px 0; color: #808080; font-family: 'Public Sans', sans-serif; font-size: 14px; }
+
+    /* ─── Product detail page ─── */
+    .pdp-img { width: 100%; height: 280px; object-fit: cover; }
+    .pdp-info { padding: 16px; }
+    .pdp-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .pdp-price { font-family: 'Public Sans', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .pdp-desc { font-family: 'Public Sans', sans-serif; font-size: 13px; color: #6A7282; line-height: 1.6; margin-bottom: 16px; }
+    .pdp-add-btn { width: 100%; height: 52px; background: #101010; color: #fff; border: none; border-radius: 999px; font-size: 16px; font-weight: 500; cursor: pointer; font-family: 'Bricolage Grotesque', sans-serif; }
+  </style>
+</head>
+<body>
+  <ion-app>
+    <ion-tabs>
+
+      <!-- ═══════════════════════════════════════════
+           HOME PAGE
+      ═══════════════════════════════════════════ -->
+      <ion-tab tab="home">
+        <ion-nav id="home-nav">
+          <ion-page>
+            <!-- Top navigation bar -->
+            <div class="top-nav">
+              <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+              <div class="search-box">
+                <input type="text" placeholder="Search" aria-label="Search products" id="home-search-input" />
+                <button class="search-btn" onclick="doSearch()" aria-label="Search">
+                  <ion-icon name="search-outline" style="color:#AAAAAA;font-size:12px;"></ion-icon>
+                </button>
+              </div>
+              <img class="flag" src="https://placehold.co/25x25/008751/ffffff?text=NG" alt="Nigeria" />
+            </div>
+
+            <!-- Category tabs -->
+            <div class="cat-bar">
+              <a href="#" class="active" onclick="return false">products</a>
+              <a href="https://padilifestyle.com" target="_blank">lifestyle</a>
+              <a href="https://stickerpadi.com" target="_blank">stickerpadi</a>
+            </div>
+
+            <!-- Offers bar -->
+            <div class="offers-bar">
+              <div class="offers-links">
+                <a href="#" class="active" onclick="showOfferFilter('all',this)">all</a>
+                <a href="#" onclick="showOfferFilter('wedding',this)">wedding</a>
+                <a href="#" onclick="showOfferFilter('business',this)">business</a>
+                <a href="#" onclick="showOfferFilter('gifts',this)">gifts</a>
+                <a href="#" onclick="showOfferFilter('events',this)">events</a>
+                <a href="#" onclick="showOfferFilter('stickers',this)">stickers</a>
+                <a href="#" onclick="showOfferFilter('packaging',this)">packaging</a>
+                <a href="#" onclick="showOfferFilter('signages-and-display',this)">signages and display</a>
+              </div>
+              <div class="services-pills">
+                <a class="service-pill" onclick="navigateTo('curate-event')">
+                  <img src="https://placehold.co/16x16/9810FA/ffffff?text=E" alt="" />
+                  curate an event
+                </a>
+                <a class="service-pill" onclick="navigateTo('request-quote')">
+                  <img src="https://placehold.co/16x16/101010/ffffff?text=Q" alt="" />
+                  request quote
+                </a>
+                <a class="service-pill" onclick="navigateTo('source-china')">
+                  <img src="https://placehold.co/16x16/DE2910/ffffff?text=C" alt="" />
+                  source from china
+                </a>
+                <a class="service-pill" onclick="navigateTo('service-hire')">
+                  <img src="https://placehold.co/16x16/101010/ffffff?text=V" alt="" />
+                  Virtual Studio
+                </a>
+                <a class="service-pill" onclick="navigateTo('service-ai')">
+                  <img src="https://placehold.co/16x16/9810FA/ffffff?text=AI" alt="" />
+                  Printpadi AI
+                </a>
+              </div>
+            </div>
+
+            <ion-content class="ion-padding-bottom">
+              <div class="page-content">
+
+                <!-- Carousel -->
+                <div class="px-4 mt-2">
+                  <div class="carousel-wrap" id="main-carousel">
+                    <div class="carousel-slides" id="carousel-track" style="transition:transform .4s ease;">
+                      <div class="carousel-slide">
+                        <img src="https://placehold.co/400x115/1a1a2e/ffffff?text=PrintPadi+Deals" alt="banner" />
+                        <div class="overlay"></div>
+                        <div class="carousel-content">
+                          <h2>Grab Up to 50% Off On Your First Bulk Purchase</h2>
+                          <button class="shop-btn" onclick="showToast('Opening deals...')">shop now</button>
+                        </div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="https://placehold.co/400x115/2d1b69/ffffff?text=Custom+Printing" alt="banner" />
+                        <div class="overlay"></div>
+                        <div class="carousel-content">
+                          <h2>Custom Printing for Business &amp; Events</h2>
+                          <button class="shop-btn">shop now</button>
+                        </div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="https://placehold.co/400x115/0f3460/ffffff?text=Gift+Shop" alt="banner" />
+                        <div class="overlay"></div>
+                        <div class="carousel-content">
+                          <h2>Perfect Gifts for Every Occasion</h2>
+                          <button class="shop-btn">shop now</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="carousel-dots" id="carousel-dots">
+                      <div class="carousel-dot active"></div>
+                      <div class="carousel-dot"></div>
+                      <div class="carousel-dot"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gift shop deals -->
+                <div class="mt-10">
+                  <div class="section-gradient">
+                    <div class="section-header">
+                      <div class="section-header-text">
+                        <h3>gift shop deals</h3>
+                        <p>gift for everyone- retail or bulk, customized or not</p>
+                      </div>
+                      <button class="arrow-btn" onclick="showToast('View All')">
+                        <ion-icon name="arrow-forward-circle-outline" style="font-size:24px;"></ion-icon>
+                      </button>
+                    </div>
+                    <div class="deals-row" id="retail-deals">
+                      <!-- Cards inserted by JS -->
+                    </div>
+                    <img class="faint-logo-tr" src="https://placehold.co/80x80/999999/ffffff?text=" alt="" aria-hidden="true" />
+                    <img class="faint-logo-bl" src="https://placehold.co/80x80/999999/ffffff?text=" alt="" aria-hidden="true" />
+                  </div>
+                </div>
+
+                <!-- Custom printing deals -->
+                <div>
+                  <div class="section-gradient">
+                    <div class="section-header">
+                      <div class="section-header-text">
+                        <h3>custom printing deals</h3>
+                        <p>your ideas, your prints, with printpadi</p>
+                      </div>
+                      <button class="arrow-btn" onclick="showToast('View All')">
+                        <ion-icon name="arrow-forward-circle-outline" style="font-size:24px;"></ion-icon>
+                      </button>
+                    </div>
+                    <div class="deals-row" id="bulk-deals">
+                      <!-- Cards inserted by JS -->
+                    </div>
+                    <img class="faint-logo-tr" src="https://placehold.co/80x80/999999/ffffff?text=" alt="" aria-hidden="true" />
+                    <img class="faint-logo-bl" src="https://placehold.co/80x80/999999/ffffff?text=" alt="" aria-hidden="true" />
+                  </div>
+                </div>
+
+                <!-- Explore latest -->
+                <div class="explore-section">
+                  <div class="sec-header">
+                    <h2>explore latest printing &amp; branding</h2>
+                    <a href="#" class="view-all-link" onclick="return false">View All</a>
+                  </div>
+                  <div class="explore-grid">
+                    <a class="explore-item" onclick="navigateTo('search')">
+                      <img src="https://placehold.co/175x182/E6E7E9/808080?text=Packaging" alt="packaging" />
+                      <h4>new in packaging</h4>
+                    </a>
+                    <a class="explore-item" onclick="navigateTo('search')">
+                      <img src="https://placehold.co/175x182/E6E7E9/808080?text=Bags" alt="bags" />
+                      <h4>new in bags</h4>
+                    </a>
+                    <a class="explore-item" onclick="navigateTo('search')">
+                      <img src="https://placehold.co/175x182/E6E7E9/808080?text=Clothing" alt="clothing" />
+                      <h4>new in clothing</h4>
+                    </a>
+                    <a class="explore-item" onclick="navigateTo('search')">
+                      <img src="https://placehold.co/175x182/E6E7E9/808080?text=Stickers" alt="stickers" />
+                      <h4>new in stickers &amp; labels</h4>
+                    </a>
+                    <a class="explore-item" onclick="navigateTo('search')">
+                      <img src="https://placehold.co/175x182/E6E7E9/808080?text=Signage" alt="signage" />
+                      <h4>new in signage &amp; posters</h4>
+                    </a>
+                    <a class="explore-item" onclick="navigateTo('search')">
+                      <img src="https://placehold.co/175x182/E6E7E9/808080?text=Gifts" alt="gifts" />
+                      <h4>new in home &amp; gifts</h4>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Explore products (2-col grid) -->
+                <div class="px-4 mt-10" style="margin-bottom:55px;">
+                  <div class="sec-header mb-4">
+                    <h2 style="font-weight:600;">explore products</h2>
+                    <a href="#" class="view-all-link" onclick="navigateTo('explore');return false">View All</a>
+                  </div>
+                  <div class="products-grid" id="home-products-grid">
+                    <!-- Products inserted by JS -->
+                  </div>
+                </div>
+              </div>
+            </ion-content>
+          </ion-page>
+        </ion-nav>
+      </ion-tab>
+
+      <!-- ═══════════════════════════════════════════
+           EXPLORE PAGE
+      ═══════════════════════════════════════════ -->
+      <ion-tab tab="explore">
+        <ion-nav id="explore-nav">
+          <ion-page>
+            <ion-content>
+              <div style="max-width:448px;margin:0 auto;min-height:calc(100vh - 5rem);display:flex;flex-direction:column;background:#fff;padding:0 16px 112px;font-family:'Public Sans',sans-serif;">
+                <!-- Status bar replica -->
+                <div class="status-bar">
+                  <span>9:41</span>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <!-- signal, wifi, battery icons -->
+                    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx=".5" fill="currentColor"/><rect x="4" y="5" width="3" height="7" rx=".5" fill="currentColor"/><rect x="8" y="3" width="3" height="9" rx=".5" fill="currentColor"/><rect x="12" y="1" width="3" height="11" rx=".5" fill="currentColor"/></svg>
+                    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2.5c2.5 0 4.5 1.6 4.5 3.5S10.5 9.5 8 9.5 3.5 7.9 3.5 6 5.5 2.5 8 2.5Z" stroke="currentColor" stroke-width="1.2"/><path d="M1 10.5h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="2" width="21" height="9" rx="2.5" stroke="currentColor" stroke-width="1.2"/><rect x="22" y="4.5" width="1.5" height="4" rx=".5" fill="currentColor"/><rect x="3" y="4" width="15" height="5" rx="1" fill="currentColor"/></svg>
+                  </div>
+                </div>
+
+                <!-- Search -->
+                <div style="margin-top:12px;">
+                  <div class="explore-search-bar">
+                    <input type="text" placeholder="Search" id="explore-search-input" aria-label="Search" />
+                    <button class="explore-search-btn" onclick="runExploreSearch()">
+                      <ion-icon name="search-outline" style="color:#fff;font-size:18px;"></ion-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <h2 style="font-family:'Bricolage Grotesque',sans-serif;margin-top:28px;font-size:17px;font-weight:600;line-height:1.3;letter-spacing:-0.02em;color:#101010;">Explore Our Categories</h2>
+
+                <ul class="explore-cats-grid" id="explore-cats" style="list-style:none;padding:0;">
+                </ul>
+              </div>
+            </ion-content>
+          </ion-page>
+        </ion-nav>
+      </ion-tab>
+
+      <!-- ═══════════════════════════════════════════
+           CART PAGE
+      ═══════════════════════════════════════════ -->
+      <ion-tab tab="cart">
+        <ion-nav id="cart-nav">
+          <ion-page>
+            <ion-content>
+              <div style="padding:43px 16px 0;">
+                <!-- Tabs -->
+                <div class="cart-tabs">
+                  <button class="cart-tab-btn active" onclick="switchCartTab('cart',this)" id="tab-btn-cart">My Cart</button>
+                  <button class="cart-tab-btn" onclick="switchCartTab('ongoing',this)" id="tab-btn-ongoing">Ongoing</button>
+                  <button class="cart-tab-btn" onclick="switchCartTab('completed',this)" id="tab-btn-completed">Completed</button>
+                </div>
+
+                <!-- Cart tab content -->
+                <div id="cart-panel">
+                  <div id="cart-empty-msg" class="empty-cart">
+                    <p>Your cart is empty. Add products from home or product pages.</p>
+                  </div>
+                  <div id="cart-items-list"></div>
+                  <div id="cart-subtotal-row" class="cart-subtotal hidden">
+                    <span>Subtotal</span>
+                    <strong id="cart-subtotal-val">₦0</strong>
+                  </div>
+                  <div id="checkout-btn-wrap" class="hidden" style="padding-bottom:96px;">
+                    <button class="checkout-btn" onclick="navigateToCheckout()">checkout</button>
+                  </div>
+                </div>
+
+                <!-- Ongoing tab content -->
+                <div id="ongoing-panel" class="hidden">
+                  <div class="order-card">
+                    <div class="order-top">
+                      <div>
+                        <div class="order-id">ORD-2024-1234</div>
+                        <div class="order-amount">₦200,000</div>
+                      </div>
+                      <span class="status-badge">In Transit</span>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                      <div>
+                        <div style="font-family:'Public Sans',sans-serif;font-size:10px;color:#808080;">Total</div>
+                        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;color:#1E2939;">₦200,000</div>
+                      </div>
+                      <a class="track-btn" onclick="showToast('Opening order tracker...')">Track Order</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Completed tab content -->
+                <div id="completed-panel" class="hidden">
+                  <p style="font-family:'Public Sans',sans-serif;font-size:14px;color:#808080;text-align:center;padding:40px 0;">No completed orders yet.</p>
+                </div>
+              </div>
+            </ion-content>
+          </ion-page>
+        </ion-nav>
+      </ion-tab>
+
+      <!-- ═══════════════════════════════════════════
+           DESIGN PAGE
+      ═══════════════════════════════════════════ -->
+      <ion-tab tab="design">
+        <ion-nav id="design-nav">
+          <ion-page>
+            <ion-content>
+              <div class="design-page">
+                <h1>Design</h1>
+                <p>Create custom prints with AI or work with a designer on your next project.</p>
+                <div class="design-btns">
+                  <button class="design-btn-primary" onclick="navigateTo('service-ai')">AI Design</button>
+                  <button class="design-btn-secondary" onclick="navigateTo('service-hire')">Hire a designer</button>
+                </div>
+              </div>
+            </ion-content>
+          </ion-page>
+        </ion-nav>
+      </ion-tab>
+
+      <!-- ═══════════════════════════════════════════
+           PROFILE PAGE
+      ═══════════════════════════════════════════ -->
+      <ion-tab tab="profile">
+        <ion-nav id="profile-nav">
+          <ion-page>
+            <ion-content>
+              <div class="profile-page">
+                <!-- User header -->
+                <div class="profile-header-user">
+                  <div class="avatar-circle">
+                    <ion-icon name="person-outline" style="font-size:26px;color:#808080;"></ion-icon>
+                  </div>
+                  <div class="user-info">
+                    <h2 id="profile-name">Guest User</h2>
+                    <p id="profile-email">Sign in to access your account</p>
+                  </div>
+                </div>
+
+                <div class="profile-accordion" id="profile-accordion">
+                  <!-- Orders -->
+                  <div class="acc-section">
+                    <div class="acc-header" onclick="toggleAccordion('acc-orders')">
+                      <span class="acc-header-left">
+                        <span class="acc-icon"><ion-icon name="document-text-outline" style="font-size:22px;"></ion-icon></span>
+                        <span class="acc-title">My Orders</span>
+                      </span>
+                      <ion-icon name="chevron-down-outline" class="acc-chevron" id="acc-orders-chevron" style="font-size:18px;color:#6A7282;"></ion-icon>
+                    </div>
+                    <div class="acc-body hidden" id="acc-orders">
+                      <a class="sub-link" onclick="switchTab('cart')">
+                        <ion-icon name="cart-outline" style="font-size:18px;color:#6A7282;"></ion-icon>
+                        View Cart &amp; Orders
+                      </a>
+                    </div>
+                  </div>
+
+                  <!-- Favorites -->
+                  <div class="acc-section">
+                    <div class="acc-header" onclick="toggleAccordion('acc-favs')">
+                      <span class="acc-header-left">
+                        <span class="acc-icon"><ion-icon name="heart-outline" style="font-size:22px;"></ion-icon></span>
+                        <span class="acc-title">Favourites</span>
+                      </span>
+                      <ion-icon name="chevron-down-outline" class="acc-chevron" id="acc-favs-chevron" style="font-size:18px;color:#6A7282;"></ion-icon>
+                    </div>
+                    <div class="acc-body hidden" id="acc-favs">
+                      <a class="sub-link" onclick="navigateTo('favorites')">
+                        <ion-icon name="heart-outline" style="font-size:18px;color:#6A7282;"></ion-icon>
+                        Saved Products
+                      </a>
+                    </div>
+                  </div>
+
+                  <!-- Help -->
+                  <div class="acc-section">
+                    <div class="acc-header" onclick="toggleAccordion('acc-help')">
+                      <span class="acc-header-left">
+                        <span class="acc-icon"><ion-icon name="chatbubble-ellipses-outline" style="font-size:22px;"></ion-icon></span>
+                        <span class="acc-title">Help &amp; Support</span>
+                      </span>
+                      <ion-icon name="chevron-down-outline" class="acc-chevron" id="acc-help-chevron" style="font-size:18px;color:#6A7282;"></ion-icon>
+                    </div>
+                    <div class="acc-body hidden" id="acc-help">
+                      <a class="sub-link" href="https://wa.me/2348000000000" target="_blank">
+                        <ion-icon name="logo-whatsapp" style="font-size:18px;color:#25D366;"></ion-icon>
+                        Chat on WhatsApp
+                      </a>
+                      <a class="sub-link" onclick="showToast('Opening chat...')">
+                        <ion-icon name="chatbubbles-outline" style="font-size:18px;color:#6A7282;"></ion-icon>
+                        Live Chat
+                      </a>
+                    </div>
+                  </div>
+
+                  <!-- Socials -->
+                  <div class="acc-section">
+                    <div class="acc-header" onclick="toggleAccordion('acc-social')">
+                      <span class="acc-header-left">
+                        <span class="acc-icon"><ion-icon name="globe-outline" style="font-size:22px;"></ion-icon></span>
+                        <span class="acc-title">Follow Us</span>
+                      </span>
+                      <ion-icon name="chevron-down-outline" class="acc-chevron" id="acc-social-chevron" style="font-size:18px;color:#6A7282;"></ion-icon>
+                    </div>
+                    <div class="acc-body hidden" id="acc-social">
+                      <div class="social-row">
+                        <a href="https://wa.me/2348000000000" target="_blank" class="social-icon">
+                          <ion-icon name="logo-whatsapp" style="font-size:20px;color:#25D366;"></ion-icon>
+                        </a>
+                        <a href="https://instagram.com" target="_blank" class="social-icon">
+                          <ion-icon name="logo-instagram" style="font-size:20px;color:#E1306C;"></ion-icon>
+                        </a>
+                        <a href="https://x.com" target="_blank" class="social-icon">
+                          <ion-icon name="logo-twitter" style="font-size:20px;color:#101010;"></ion-icon>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Account -->
+                  <div class="acc-section">
+                    <div class="acc-header" onclick="toggleAccordion('acc-account')">
+                      <span class="acc-header-left">
+                        <span class="acc-icon"><ion-icon name="person-outline" style="font-size:22px;"></ion-icon></span>
+                        <span class="acc-title">Account</span>
+                      </span>
+                      <ion-icon name="chevron-down-outline" class="acc-chevron" id="acc-account-chevron" style="font-size:18px;color:#6A7282;"></ion-icon>
+                    </div>
+                    <div class="acc-body hidden" id="acc-account">
+                      <a class="sub-link" onclick="showToast('Signing in...')">
+                        <ion-icon name="log-in-outline" style="font-size:18px;color:#6A7282;"></ion-icon>
+                        Sign In / Sign Up
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-content>
+          </ion-page>
+        </ion-nav>
+      </ion-tab>
+
+      <!-- ─── Bottom Tab Bar ─── -->
+      <ion-tab-bar slot="bottom">
+        <ion-tab-button tab="home" onclick="setActiveTab('home',this)">
+          <ion-icon name="home-outline" id="icon-home"></ion-icon>
+          <ion-label>home</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="explore" onclick="setActiveTab('explore',this)">
+          <ion-icon name="search-outline" id="icon-explore"></ion-icon>
+          <ion-label>explore</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="cart" onclick="setActiveTab('cart',this)">
+          <ion-icon name="cart-outline" id="icon-cart"></ion-icon>
+          <ion-label>my cart</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="design" onclick="setActiveTab('design',this)">
+          <ion-icon name="brush-outline" id="icon-design"></ion-icon>
+          <ion-label>design</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="profile" onclick="setActiveTab('profile',this)">
+          <ion-icon name="person-outline" id="icon-profile"></ion-icon>
+          <ion-label>profile</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+
+    </ion-tabs>
+  </ion-app>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL / OVERLAY PAGES (pushed as sheets)
+  ═══════════════════════════════════════════ -->
+
+  <!-- Product Detail Page (modal) -->
+  <div id="page-product" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-product')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+      <div class="search-box" style="flex:1;">
+        <input type="text" placeholder="Search" />
+        <button class="search-btn"><ion-icon name="search-outline" style="color:#AAAAAA;font-size:12px;"></ion-icon></button>
+      </div>
+      <img class="flag" src="https://placehold.co/25x25/008751/ffffff?text=NG" alt="Nigeria" />
+    </div>
+    <div id="product-detail-content"></div>
+  </div>
+
+  <!-- Search Page (modal) -->
+  <div id="page-search" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-search')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+      <div class="search-box" style="flex:1;">
+        <input type="text" placeholder="Search" id="search-page-input" onkeydown="if(event.key==='Enter')runSearchPage()" />
+        <button class="search-btn" onclick="runSearchPage()"><ion-icon name="search-outline" style="color:#AAAAAA;font-size:12px;"></ion-icon></button>
+      </div>
+      <img class="flag" src="https://placehold.co/25x25/008751/ffffff?text=NG" alt="Nigeria" />
+    </div>
+    <div class="search-results" style="padding-top:16px;padding-bottom:80px;">
+      <div class="search-tag-row" id="search-tags"></div>
+      <div id="search-results-grid" class="products-grid"></div>
+    </div>
+  </div>
+
+  <!-- Service: Curate Event -->
+  <div id="page-curate-event" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-curate-event')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+    </div>
+    <div class="service-page" style="padding-top:24px;">
+      <div class="service-hero">
+        <img src="https://placehold.co/400x160/2d1b69/ffffff?text=Curate+an+Event" alt="" />
+        <div class="service-hero-text">
+          <h1>Curate an Event</h1>
+          <p>Let us handle all your event printing needs</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Event Name</label>
+        <input class="form-input" type="text" placeholder="e.g. Annual Gala Night" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Event Type</label>
+        <select class="form-input">
+          <option>Wedding</option>
+          <option>Corporate</option>
+          <option>Birthday</option>
+          <option>Concert</option>
+          <option>Get Together</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Event Date</label>
+        <input class="form-input" type="date" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Guest Count</label>
+        <input class="form-input" type="number" placeholder="e.g. 200" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Additional Notes</label>
+        <textarea class="form-input" rows="4" placeholder="Tell us more about your event..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="showToast('Request submitted! We\'ll be in touch.')">Submit Request</button>
+    </div>
+  </div>
+
+  <!-- Service: Request Quote -->
+  <div id="page-request-quote" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-request-quote')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+    </div>
+    <div class="service-page" style="padding-top:24px;">
+      <div class="service-hero">
+        <img src="https://placehold.co/400x160/101010/ffffff?text=Request+a+Quote" alt="" />
+        <div class="service-hero-text">
+          <h1>Request a Quote</h1>
+          <p>Get a custom quote for your printing needs</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Product / Service</label>
+        <input class="form-input" type="text" placeholder="e.g. Business Cards, Flyers..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quantity</label>
+        <input class="form-input" type="number" placeholder="e.g. 500" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Phone / WhatsApp</label>
+        <input class="form-input" type="tel" placeholder="+234 800 000 0000" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" rows="4" placeholder="Describe your requirements..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="showToast('Quote request sent! We\'ll contact you.')">Send Request</button>
+    </div>
+  </div>
+
+  <!-- Service: Source from China -->
+  <div id="page-source-china" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-source-china')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+    </div>
+    <div class="service-page" style="padding-top:24px;">
+      <div class="service-hero">
+        <img src="https://placehold.co/400x160/DE2910/ffffff?text=Source+From+China" alt="" />
+        <div class="service-hero-text">
+          <h1>Source From China</h1>
+          <p>We source quality products directly from China</p>
+        </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;">China Products</h3>
+        <div class="products-grid" id="china-products-grid"></div>
+      </div>
+      <button class="submit-btn" onclick="showToast('Connecting to sourcing team...')">Request Sourcing</button>
+    </div>
+  </div>
+
+  <!-- Service: Virtual Studio -->
+  <div id="page-service-hire" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-service-hire')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+    </div>
+    <div class="service-page" style="padding-top:24px;">
+      <div class="service-hero">
+        <img src="https://placehold.co/400x160/1a1a2e/ffffff?text=Virtual+Studio" alt="" />
+        <div class="service-hero-text">
+          <h1>Virtual Studio</h1>
+          <p>Work with professional designers at Printpadi</p>
+        </div>
+      </div>
+      <p style="font-family:'Public Sans',sans-serif;font-size:14px;color:#6A7282;line-height:1.7;margin-bottom:20px;">Our team of creative designers will bring your vision to life. From logos to full brand kits, we've got you covered.</p>
+      <button class="submit-btn" onclick="showToast('Opening virtual studio...')">Get Started</button>
+    </div>
+  </div>
+
+  <!-- Service: Printpadi AI -->
+  <div id="page-service-ai" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-service-ai')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+    </div>
+    <div class="service-page" style="padding-top:24px;">
+      <div class="service-hero" style="background: linear-gradient(135deg,#2d1b69,#9810FA);">
+        <div class="service-hero-text">
+          <h1>Printpadi AI</h1>
+          <p>Generate designs with artificial intelligence</p>
+        </div>
+      </div>
+      <p style="font-family:'Public Sans',sans-serif;font-size:14px;color:#6A7282;line-height:1.7;margin-bottom:20px;">Describe your idea and our AI will generate stunning design concepts ready for printing.</p>
+      <div class="form-group">
+        <label class="form-label">Describe your design</label>
+        <textarea class="form-input" rows="5" placeholder="e.g. A modern minimalist business card for a photography studio with dark theme..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="showToast('Generating design...')">Generate Design</button>
+    </div>
+  </div>
+
+  <!-- Cart Summary / Checkout -->
+  <div id="page-checkout" class="hidden" style="position:fixed;inset:0;z-index:100;background:#fff;overflow-y:auto;">
+    <div class="top-nav">
+      <button class="back-btn" onclick="closePage('page-checkout')">
+        <ion-icon name="arrow-back-outline" style="font-size:16px;"></ion-icon>
+      </button>
+      <img class="logo" src="https://placehold.co/100x24/101010/9810FA?text=printpadi&font=inter" alt="Printpadi logo" />
+    </div>
+    <div class="checkout-section">
+      <h2 class="checkout-title">Order Summary</h2>
+      <div class="checkout-card">
+        <h3>Delivery Details</h3>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input class="form-input" type="tel" placeholder="+234 800 000 0000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Address</label>
+          <textarea class="form-input" rows="3" placeholder="Your delivery address"></textarea>
+        </div>
+      </div>
+      <div class="checkout-card" id="checkout-items-card">
+        <h3>Items</h3>
+        <div id="checkout-items-list"></div>
+      </div>
+      <div class="checkout-card">
+        <div class="checkout-row">
+          <span>Subtotal</span>
+          <strong id="checkout-subtotal">₦0</strong>
+        </div>
+        <div class="checkout-row">
+          <span>Delivery</span>
+          <strong>₦2,500</strong>
+        </div>
+        <div class="checkout-row" style="border-top:1px solid #F3F4F6;padding-top:12px;margin-top:4px;">
+          <span style="font-size:15px;font-weight:600;color:#101010;">Total</span>
+          <strong class="checkout-total" id="checkout-total">₦0</strong>
+        </div>
+      </div>
+      <button class="checkout-btn" onclick="showToast('Order placed! You\'ll receive a confirmation shortly.')">Place Order</button>
+    </div>
+  </div>
+
+  <!-- Add to Cart Drawer -->
+  <div class="drawer-overlay" id="cart-drawer" onclick="closeDrawer(event)">
+    <div class="drawer-sheet" onclick="event.stopPropagation()">
+      <div class="drawer-handle"></div>
+      <h2 id="drawer-product-name">Product</h2>
+      <div id="drawer-content"></div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast-msg"></div>
+
+  <script>
+    // ─────────────────────────────────────────────────────────────
+    // STATE
+    // ─────────────────────────────────────────────────────────────
+    const state = {
+      cart: [],           // {id, productId, name, image, unitPrice, quantity, minQty, maxQty}
+      favorites: new Set(),
+      currentTab: 'home',
+      activeFilter: 'all',
+    };
+
+    // ─────────────────────────────────────────────────────────────
+    // MOCK PRODUCTS DATA
+    // ─────────────────────────────────────────────────────────────
+    const PRODUCTS = [
+      { id:'p1', name:'Custom Business Cards', type:'bulk', price:[3500,7000], basePrice:3500, moq:100, stock:500, totalStockCount:500, images:['https://placehold.co/400x400/E6E7E9/808080?text=Business+Cards'], origin:'NG', category:'business', tags:['business'], isCustomizable:true, description:'Premium matte business cards with full colour printing.' },
+      { id:'p2', name:'Wedding Invitation Cards', type:'retail', price:[1200], stock:45, totalStockCount:45, images:['https://placehold.co/400x400/f5e6ff/9810FA?text=Wedding+Cards'], origin:'NG', category:'wedding', tags:['wedding'], isCustomizable:true, description:'Elegant wedding invitation cards with custom design.' },
+      { id:'p3', name:'Branded T-Shirts', type:'bulk', price:[4500,8000], basePrice:4500, moq:50, stock:200, totalStockCount:200, images:['https://placehold.co/400x400/1a1a2e/ffffff?text=T-Shirts'], origin:'CN', category:'clothing', tags:['gifts','events'], isCustomizable:true, description:'High-quality branded t-shirts for events and promotions.' },
+      { id:'p4', name:'Custom Mugs', type:'retail', price:[2800], stock:8, totalStockCount:8, images:['https://placehold.co/400x400/fff3e0/E65100?text=Mugs'], origin:'NG', category:'gifts', tags:['gifts'], isCustomizable:false, description:'Ceramic mugs with custom full-colour printing.' },
+      { id:'p5', name:'Event Flyers', type:'bulk', price:[800,2000], basePrice:800, moq:200, stock:1000, totalStockCount:1000, images:['https://placehold.co/400x400/e8f5e9/2e7d32?text=Flyers'], origin:'NG', category:'events', tags:['events'], isCustomizable:true, description:'Full-colour A5 flyers perfect for events.' },
+      { id:'p6', name:'Roll-up Banners', type:'bulk', price:[15000,25000], basePrice:15000, moq:5, stock:100, totalStockCount:100, images:['https://placehold.co/400x400/e3f2fd/1565C0?text=Banners'], origin:'NG', category:'signage', tags:['signages-and-display'], isCustomizable:true, description:'Professional roll-up display banners for events and exhibitions.' },
+      { id:'p7', name:'Sticker Packs', type:'retail', price:[500], stock:200, totalStockCount:200, images:['https://placehold.co/400x400/fce4ec/c62828?text=Stickers'], origin:'NG', category:'stickers', tags:['stickers'], isCustomizable:false, description:'Waterproof vinyl sticker packs in various sizes.' },
+      { id:'p8', name:'Branded Tote Bags', type:'bulk', price:[2500,4000], basePrice:2500, moq:30, stock:150, totalStockCount:150, images:['https://placehold.co/400x400/f3e5f5/6a1b9a?text=Tote+Bags'], origin:'CN', category:'packaging', tags:['packaging','gifts'], isCustomizable:true, description:'Eco-friendly canvas tote bags with screen printing.' },
+    ];
+
+    const CATEGORIES = [
+      { id:'c1', slug:'business', name:'Business', src:'https://placehold.co/76x76/E6E7E9/808080?text=B' },
+      { id:'c2', slug:'wedding', name:'Wedding', src:'https://placehold.co/76x76/f5e6ff/9810FA?text=W' },
+      { id:'c3', slug:'gifts', name:'Gifts', src:'https://placehold.co/76x76/fff3e0/E65100?text=G' },
+      { id:'c4', slug:'events', name:'Events', src:'https://placehold.co/76x76/e8f5e9/2e7d32?text=Ev' },
+      { id:'c5', slug:'stickers', name:'Stickers', src:'https://placehold.co/76x76/fce4ec/c62828?text=St' },
+      { id:'c6', slug:'packaging', name:'Packaging', src:'https://placehold.co/76x76/f3e5f5/6a1b9a?text=P' },
+      { id:'c7', slug:'signages-and-display', name:'Signage & Display', src:'https://placehold.co/76x76/e3f2fd/1565C0?text=Si' },
+      { id:'c8', slug:'clothing', name:'Clothing', src:'https://placehold.co/76x76/1a1a2e/ffffff?text=Cl' },
+    ];
+
+    // ─────────────────────────────────────────────────────────────
+    // UTILS
+    // ─────────────────────────────────────────────────────────────
+    function formatNaira(v) {
+      return new Intl.NumberFormat('en-NG',{maximumFractionDigits:0}).format(v||0);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast-msg');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // ROUTING / NAVIGATION
+    // ─────────────────────────────────────────────────────────────
+    const PAGE_MAP = {
+      'curate-event':    'page-curate-event',
+      'request-quote':   'page-request-quote',
+      'source-china':    'page-source-china',
+      'service-hire':    'page-service-hire',
+      'service-ai':      'page-service-ai',
+      'checkout':        'page-checkout',
+      'search':          'page-search',
+      'favorites':       'page-search',
+    };
+
+    function navigateTo(page, data) {
+      const pageId = PAGE_MAP[page];
+      if (!pageId) return;
+      if (page === 'source-china') renderChinaProducts();
+      if (page === 'checkout') renderCheckout();
+      if (page === 'search' || page === 'favorites') renderSearchPage();
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    function closePage(pageId) {
+      document.getElementById(pageId).classList.add('hidden');
+    }
+
+    function navigateToCheckout() {
+      renderCheckout();
+      document.getElementById('page-checkout').classList.remove('hidden');
+    }
+
+    function doSearch() {
+      const q = document.getElementById('home-search-input').value;
+      document.getElementById('search-page-input').value = q;
+      renderSearchPage(q);
+      document.getElementById('page-search').classList.remove('hidden');
+    }
+
+    function runExploreSearch() {
+      const q = document.getElementById('explore-search-input').value;
+      document.getElementById('search-page-input').value = q;
+      renderSearchPage(q);
+      document.getElementById('page-search').classList.remove('hidden');
+    }
+
+    function runSearchPage() {
+      const q = document.getElementById('search-page-input').value;
+      renderSearchPage(q);
+    }
+
+    function switchTab(tab) {
+      const tabs = document.querySelector('ion-tabs');
+      if (tabs) {
+        tabs.select(tab);
+      }
+    }
+
+    function setActiveTab(tabName, el) {
+      state.currentTab = tabName;
+      // update icons to filled/outline
+      const iconMap = {
+        home: 'icon-home', explore: 'icon-explore',
+        cart: 'icon-cart', design: 'icon-design', profile: 'icon-profile'
+      };
+      const filled = { home:'home', explore:'search', cart:'cart', design:'brush', profile:'person' };
+      Object.keys(iconMap).forEach(t => {
+        const ic = document.getElementById(iconMap[t]);
+        if (ic) ic.name = t === tabName ? filled[t] : filled[t]+'-outline';
+      });
+    }
+
+    function showOfferFilter(filter, el) {
+      event && event.preventDefault();
+      state.activeFilter = filter;
+      document.querySelectorAll('.offers-links a').forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+      renderHomeProducts();
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CARD RENDERING
+    // ─────────────────────────────────────────────────────────────
+    function originFlag(origin) {
+      if (origin === 'CN') return 'https://placehold.co/16x16/DE2910/ffde00?text=CN';
+      return 'https://placehold.co/16x16/008751/ffffff?text=NG';
+    }
+
+    function renderSecondaryCard(p) {
+      const prices = p.price || [0];
+      const minP = Math.min(...prices);
+      const maxP = Math.max(...prices);
+      const priceLabel = (p.type === 'bulk' && minP !== maxP)
+        ? `₦${formatNaira(minP)} - ${formatNaira(maxP)}`
+        : `₦${formatNaira(p.basePrice || minP)}`;
+      const isFav = state.favorites.has(p.id);
+      return `
+        <div class="product-card-sec card-link-wrap" onclick="openProduct('${p.id}')">
+          <div class="img-wrap">
+            <img src="${p.images[0]}" alt="${p.name}" loading="lazy" />
+            <div class="img-overlay" onclick="event.stopPropagation()">
+              <span>${p.isCustomizable ? '<span class="customizable-badge">Customizable</span>' : ''}</span>
+              <button class="heart-btn-sec" onclick="toggleFav('${p.id}',this)" aria-label="Favorite">
+                <svg viewBox="0 0 24 24" fill="${isFav ? '#e11d48' : 'none'}" stroke="${isFav ? '#e11d48' : '#4a5565'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-info">
+            <div class="name-row">
+              <h3>${p.name}</h3>
+              <img class="flag-img" src="${originFlag(p.origin)}" alt="${p.origin||'NG'}" loading="lazy" />
+            </div>
+            <div class="price-row">
+              <span class="price">${priceLabel}</span>
+              ${p.type === 'bulk' ? `<span class="moq">(MOQ: ${p.moq||10} Pcs)</span>` : ''}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderPrimaryCard(p) {
+      const prices = p.price || [0];
+      const minP = Math.min(...prices);
+      const displayPrice = p.type === 'bulk' ? (p.basePrice || minP) : prices[0] || 0;
+      const stock = p.totalStockCount ?? p.stock ?? 0;
+      const stockClass = stock <= 10 ? 'stock-red' : stock <= 50 ? 'stock-amber' : 'stock-green';
+      const stockLabel = p.type === 'retail' ? `${stock} pcs` : `${p.moq||10} moq`;
+      const isFav = state.favorites.has(p.id);
+      return `
+        <div class="product-card-pri card-link-wrap" onclick="openProduct('${p.id}')">
+          <div class="img-wrap">
+            <img src="${p.images[0]}" alt="${p.name}" loading="lazy" />
+            <div class="img-overlay" onclick="event.stopPropagation()">
+              <span>${p.isCustomizable ? '<span class="customizable-badge" style="height:14px;font-size:8px;padding:0 4px;">Customizable</span>' : ''}</span>
+              <button class="heart-btn-pri" onclick="toggleFav('${p.id}',this)" aria-label="Favorite">
+                <svg viewBox="0 0 24 24" fill="${isFav ? '#e11d48' : 'none'}" stroke="${isFav ? '#e11d48' : '#4a5565'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-info">
+            <h3>${p.name}</h3>
+            <p class="stock ${stockClass}">${stockLabel}</p>
+            <div class="bottom-row">
+              <span class="price">₦${formatNaira(displayPrice)}</span>
+              <button class="add-cart-btn" onclick="event.stopPropagation();openCartDrawer('${p.id}')" aria-label="Add to cart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // HOME PAGE RENDERING
+    // ─────────────────────────────────────────────────────────────
+    function renderHomeProducts() {
+      const filter = state.activeFilter;
+      const filtered = filter === 'all'
+        ? PRODUCTS
+        : PRODUCTS.filter(p => p.tags && p.tags.includes(filter));
+
+      // Retail deals (secondary cards)
+      const retailEl = document.getElementById('retail-deals');
+      const retail = PRODUCTS.filter(p => p.type === 'retail').slice(0,3);
+      retailEl.innerHTML = retail.map(p =>
+        `<div class="deal-card-wrap">${renderSecondaryCard(p)}</div>`
+      ).join('');
+
+      // Bulk deals (secondary cards)
+      const bulkEl = document.getElementById('bulk-deals');
+      const bulk = PRODUCTS.filter(p => p.type === 'bulk').slice(0,3);
+      bulkEl.innerHTML = bulk.map(p =>
+        `<div class="deal-card-wrap">${renderSecondaryCard(p)}</div>`
+      ).join('');
+
+      // All products grid (primary cards)
+      const gridEl = document.getElementById('home-products-grid');
+      gridEl.innerHTML = filtered.map(p => renderPrimaryCard(p)).join('');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // EXPLORE PAGE
+    // ─────────────────────────────────────────────────────────────
+    function renderExplore() {
+      const el = document.getElementById('explore-cats');
+      el.innerHTML = CATEGORIES.map(c => `
+        <li class="explore-cat-item" onclick="navigateToSearch('${c.slug}')">
+          <div class="explore-cat-img">
+            <img src="${c.src}" alt="${c.name}" loading="lazy" />
+          </div>
+          <span class="explore-cat-label">${c.name}</span>
+        </li>
+      `).join('');
+    }
+
+    function navigateToSearch(tag) {
+      renderSearchPage('', tag);
+      document.getElementById('page-search').classList.remove('hidden');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // SEARCH PAGE
+    // ─────────────────────────────────────────────────────────────
+    function renderSearchPage(q = '', tag = '') {
+      // Render tag pills
+      const tagsEl = document.getElementById('search-tags');
+      tagsEl.innerHTML = CATEGORIES.map(c => `
+        <button class="tag-pill ${c.slug === tag ? 'active' : ''}" onclick="navigateToSearch('${c.slug}')">${c.name}</button>
+      `).join('');
+
+      // Filter products
+      let results = PRODUCTS;
+      if (tag) results = results.filter(p => p.tags && p.tags.includes(tag));
+      if (q)   results = results.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
+
+      const el = document.getElementById('search-results-grid');
+      if (results.length === 0) {
+        el.innerHTML = `<div class="search-empty" style="grid-column:1/-1;">No products found for "${q||tag}"</div>`;
+      } else {
+        el.innerHTML = results.map(p => renderPrimaryCard(p)).join('');
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PRODUCT DETAIL
+    // ─────────────────────────────────────────────────────────────
+    function openProduct(productId) {
+      const p = PRODUCTS.find(x => x.id === productId);
+      if (!p) return;
+      const prices = p.price || [0];
+      const displayPrice = p.type === 'bulk' ? (p.basePrice || prices[0]) : prices[0] || 0;
+      document.getElementById('product-detail-content').innerHTML = `
+        <img class="pdp-img" src="${p.images[0]}" alt="${p.name}" />
+        <div class="pdp-info">
+          <h1 class="pdp-title capitalize">${p.name}</h1>
+          <p class="pdp-price">₦${formatNaira(displayPrice)}</p>
+          ${p.type === 'bulk' ? `<p style="font-family:'Public Sans',sans-serif;font-size:12px;color:#808080;margin-bottom:8px;">MOQ: ${p.moq||10} pcs</p>` : ''}
+          ${p.isCustomizable ? '<span class="customizable-badge" style="height:20px;font-size:10px;margin-bottom:12px;display:inline-flex;">Customizable</span>' : ''}
+          <p class="pdp-desc">${p.description || ''}</p>
+          <button class="pdp-add-btn" onclick="openCartDrawer('${p.id}');closePage('page-product')">Add to Cart</button>
+        </div>
+      `;
+      document.getElementById('page-product').classList.remove('hidden');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // FAVORITES
+    // ─────────────────────────────────────────────────────────────
+    function toggleFav(productId, btn) {
+      if (state.favorites.has(productId)) {
+        state.favorites.delete(productId);
+        btn.querySelector('svg').setAttribute('fill', 'none');
+        btn.querySelector('svg').setAttribute('stroke', '#4a5565');
+        showToast('Removed from favourites');
+      } else {
+        state.favorites.add(productId);
+        btn.querySelector('svg').setAttribute('fill', '#e11d48');
+        btn.querySelector('svg').setAttribute('stroke', '#e11d48');
+        showToast('Added to favourites');
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CART DRAWER
+    // ─────────────────────────────────────────────────────────────
+    function openCartDrawer(productId) {
+      const p = PRODUCTS.find(x => x.id === productId);
+      if (!p) return;
+      document.getElementById('drawer-product-name').textContent = p.name;
+      const prices = p.price || [0];
+      const displayPrice = p.type === 'bulk' ? (p.basePrice || prices[0]) : prices[0] || 0;
+      let qty = p.moq || 1;
+      document.getElementById('drawer-content').innerHTML = `
+        <div style="margin-bottom:16px;">
+          <img src="${p.images[0]}" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:12px;" alt="${p.name}" />
+          <p style="font-size:20px;font-weight:700;font-family:'Public Sans',sans-serif;">₦${formatNaira(displayPrice)}</p>
+          ${p.type === 'bulk' ? `<p style="font-size:12px;color:#808080;font-family:'Public Sans',sans-serif;font-style:italic;">Minimum: ${p.moq||10} pcs</p>` : ''}
+        </div>
+        <div style="margin-bottom:20px;">
+          <label class="form-label">Quantity</label>
+          <div class="qty-controls" style="max-width:100%;">
+            <button onclick="drawerQtyChange(-1,'${p.id}',${displayPrice},${p.moq||1},${p.totalStockCount||999})">
+              <svg viewBox="0 0 24 24" width="16" fill="none" stroke="#101010" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </button>
+            <span class="qty-value" id="drawer-qty">${qty}</span>
+            <button onclick="drawerQtyChange(1,'${p.id}',${displayPrice},${p.moq||1},${p.totalStockCount||999})">
+              <svg viewBox="0 0 24 24" width="16" fill="none" stroke="#101010" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+            </button>
+          </div>
+        </div>
+        ${p.isCustomizable ? `
+        <div style="margin-bottom:16px;">
+          <label class="form-label">Design Method</label>
+          <select class="form-input">
+            <option>Upload Design</option>
+            <option>Send Design via WhatsApp or Email after Checkout</option>
+            <option>Hire a Designer From Printpadi</option>
+            <option disabled>Use Printpadi AI (Free)</option>
+          </select>
+        </div>
+        ` : ''}
+        <button class="checkout-btn" onclick="addToCartFromDrawer('${p.id}',${displayPrice},${p.moq||1},${p.totalStockCount||999})">Add to Cart</button>
+      `;
+      // store qty in drawerState
+      window._drawerQty = qty;
+      window._drawerMinQty = p.moq || 1;
+      window._drawerMaxQty = p.totalStockCount || 999;
+      document.getElementById('cart-drawer').classList.add('open');
+    }
+
+    function drawerQtyChange(delta, productId, price, min, max) {
+      window._drawerQty = Math.max(min, Math.min(max, (window._drawerQty||min) + delta));
+      document.getElementById('drawer-qty').textContent = window._drawerQty;
+      if ((window._drawerQty||min) <= min && delta < 0) showToast(`Minimum quantity is ${min} pcs.`);
+      if ((window._drawerQty||max) >= max && delta > 0) showToast(`Maximum available is ${max} pcs.`);
+    }
+
+    function addToCartFromDrawer(productId, unitPrice, minQty, maxQty) {
+      const p = PRODUCTS.find(x => x.id === productId);
+      if (!p) return;
+      const qty = window._drawerQty || minQty;
+      const itemId = productId + ':default:default:default:default:no-design';
+      const existing = state.cart.find(i => i.id === itemId);
+      if (existing) {
+        existing.quantity = Math.min(maxQty, existing.quantity + qty);
+      } else {
+        state.cart.push({ id: itemId, productId, name: p.name, image: p.images[0], unitPrice, quantity: qty, minQty, maxQty });
+      }
+      closeDrawer();
+      renderCart();
+      showToast(`${p.name} added to cart!`);
+    }
+
+    function closeDrawer(e) {
+      if (!e || e.target === document.getElementById('cart-drawer')) {
+        document.getElementById('cart-drawer').classList.remove('open');
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CART RENDERING
+    // ─────────────────────────────────────────────────────────────
+    function renderCart() {
+      const items = state.cart;
+      const listEl = document.getElementById('cart-items-list');
+      const emptyEl = document.getElementById('cart-empty-msg');
+      const subtotalRow = document.getElementById('cart-subtotal-row');
+      const checkoutWrap = document.getElementById('checkout-btn-wrap');
+      const subtotalVal = document.getElementById('cart-subtotal-val');
+
+      if (items.length === 0) {
+        emptyEl.classList.remove('hidden');
+        listEl.innerHTML = '';
+        subtotalRow.classList.add('hidden');
+        checkoutWrap.classList.add('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      subtotalRow.classList.remove('hidden');
+      checkoutWrap.classList.remove('hidden');
+
+      const subtotal = items.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
+      subtotalVal.textContent = `₦${formatNaira(subtotal)}`;
+
+      listEl.innerHTML = items.map(item => `
+        <div class="cart-item-card">
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="cart-item-info">
+            <div class="cart-item-top">
+              <span class="cart-item-name">${item.name}</span>
+              <button class="trash-btn" onclick="removeCartItem('${item.id}')" aria-label="Remove">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              </button>
+            </div>
+            <div class="qty-price">
+              <div>
+                <p class="unit-price-info">${item.quantity} pcs × ₦${formatNaira(item.unitPrice)}</p>
+                <p class="total-price">₦${formatNaira(item.quantity * item.unitPrice)}</p>
+              </div>
+              <div class="qty-controls">
+                <button onclick="changeCartQty('${item.id}',-1)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#101010" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </button>
+                <span class="qty-value">${item.quantity}</span>
+                <button onclick="changeCartQty('${item.id}',1)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#101010" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function removeCartItem(itemId) {
+      state.cart = state.cart.filter(i => i.id !== itemId);
+      renderCart();
+    }
+
+    function changeCartQty(itemId, delta) {
+      const item = state.cart.find(i => i.id === itemId);
+      if (!item) return;
+      const newQty = item.quantity + delta;
+      if (newQty < (item.minQty || 1)) { showToast(`Minimum quantity is ${item.minQty||1} pcs.`); return; }
+      if (newQty > (item.maxQty || 9999)) { showToast(`Maximum available is ${item.maxQty} pcs.`); return; }
+      item.quantity = newQty;
+      renderCart();
+    }
+
+    function switchCartTab(tab, btn) {
+      ['cart','ongoing','completed'].forEach(t => {
+        document.getElementById(`${t}-panel`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tab-btn-${t}`).classList.toggle('active', t === tab);
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CHECKOUT
+    // ─────────────────────────────────────────────────────────────
+    function renderCheckout() {
+      const items = state.cart;
+      const subtotal = items.reduce((s,i) => s + i.unitPrice * i.quantity, 0);
+      document.getElementById('checkout-subtotal').textContent = `₦${formatNaira(subtotal)}`;
+      document.getElementById('checkout-total').textContent = `₦${formatNaira(subtotal + 2500)}`;
+      document.getElementById('checkout-items-list').innerHTML = items.map(i => `
+        <div class="checkout-row">
+          <span>${i.name} × ${i.quantity}</span>
+          <strong>₦${formatNaira(i.unitPrice * i.quantity)}</strong>
+        </div>
+      `).join('') || '<p style="font-size:13px;color:#808080;font-family:\'Public Sans\',sans-serif;">No items in cart</p>';
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // SOURCE CHINA PRODUCTS
+    // ─────────────────────────────────────────────────────────────
+    function renderChinaProducts() {
+      const chinaProds = PRODUCTS.filter(p => p.origin === 'CN');
+      const el = document.getElementById('china-products-grid');
+      if (el) el.innerHTML = chinaProds.map(p => renderPrimaryCard(p)).join('');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PROFILE ACCORDION
+    // ─────────────────────────────────────────────────────────────
+    function toggleAccordion(id) {
+      const body = document.getElementById(id);
+      const chevron = document.getElementById(id + '-chevron');
+      body.classList.toggle('hidden');
+      if (chevron) chevron.classList.toggle('open');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CAROUSEL
+    // ─────────────────────────────────────────────────────────────
+    let carouselIdx = 0;
+    const CAROUSEL_TOTAL = 3;
+
+    function updateCarousel() {
+      const track = document.getElementById('carousel-track');
+      if (track) track.style.transform = `translateX(-${carouselIdx * 100}%)`;
+      document.querySelectorAll('.carousel-dot').forEach((d,i) => {
+        d.classList.toggle('active', i === carouselIdx);
+        d.style.opacity = i === carouselIdx ? '1' : '0.5';
+      });
+    }
+
+    setInterval(() => {
+      carouselIdx = (carouselIdx + 1) % CAROUSEL_TOTAL;
+      updateCarousel();
+    }, 3000);
+
+    // ─────────────────────────────────────────────────────────────
+    // INIT
+    // ─────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      renderHomeProducts();
+      renderExplore();
+      renderCart();
+      // Set home tab active by default
+      setActiveTab('home', null);
+    });
+  </script>
+</body>
+</html>

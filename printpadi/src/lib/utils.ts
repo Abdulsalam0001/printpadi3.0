@@ -24,7 +24,7 @@ export function formatNaira(value: number): string {
 }
 
 /**
- * Returns the flag image src for a product origin code.
+ * Returns the flag IonImgsrc for a product origin code.
  * Mirrors lib/product-origin.ts pattern.
  */
 export function getOriginFlagSrc(origin?: string): string {

@@ -105,7 +105,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   // ── addItem: exact port ──────────────────────────────────────
-  addItem: ({ product, quantity, options, unitPrice, minQuantity, maxQuantity, image }) => {
+  addItem: ({ product, quantity, options, unitPrice, minQuantity, maxQuantity }) => {
     const itemId = createCartItemId({ product, quantity, options });
 
     set(state => {
@@ -166,7 +166,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         id:          itemId,
         productId:   product.id,
         name:        product.name.trim(),
-        image:       image ?? product.images[0] ?? '/shirts.svg',
+        image:       IonImg?? product.images[0] ?? '/shirts.svg',
         unitPrice:   toMoney(safeUnitPrice),
         quantity:    safeQuantity,
         minQuantity: resolvedMinQuantity,
@@ -254,4 +254,16 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   itemCount: () =>
     get().cart.items.reduce((count, item) => count + item.quantity, 0),
+
+  // ── Convenience accessor for items ───────────────────────────
+  items: [] as CartItem[],
+
+  // ── Total price ──────────────────────────────────────────────
+  totalPrice: () => {
+    const amount = get().cart.items.reduce(
+      (sum, item) => sum + item.unitPrice.amount * item.quantity,
+      0,
+    );
+    return amount;
+  },
 }));

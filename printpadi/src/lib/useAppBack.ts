@@ -1,7 +1,7 @@
 // ============================================================
 // PrintPadi – useAppBack hook
 // Exact port of lib/use-app-back.ts
-// next/navigation useRouter → Ionic useIonRouter
+// react-router-dom useRouter → Ionic useIonRouter
 // ============================================================
 
 import { useCallback } from 'react';

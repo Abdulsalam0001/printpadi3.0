@@ -1,0 +1,10 @@
+---
+description: Keep design mock PNGs for visual regression out of git
+alwaysApply: true
+---
+
+# Visual regression mocks
+
+- Do **not** commit, push, or add to git history design mock PNGs for explore/search/cart-summary/product PDP/source-china/request-quote pixel comparison (`visual-regression/reference/explore-design.png`, `visual-regression/reference/search-design.png`, `visual-regression/reference/cart-summary-tab1.png`, `visual-regression/reference/cart-summary-tab2.png`, `visual-regression/reference/product-pdp-design.png`, `visual-regression/reference/source-china-design.png`, `visual-regression/reference/request-quote-design.png`).
+- Those files are **gitignored**; keep them only on your machine or in design tooling outside the repo.
+- Scripts and README may document expected local paths; do not check in the binary assets.
