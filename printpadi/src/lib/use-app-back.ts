@@ -1,4 +1,6 @@
-// Stub for use-app-back
-export const useAppBack = () => {
-  return null;
-};
+// ============================================================
+// PrintPadi – lib/use-app-back.ts (compatibility re-export)
+// Canonical implementation lives in `@/lib/useAppBack`.
+// ============================================================
+
+export * from './useAppBack';

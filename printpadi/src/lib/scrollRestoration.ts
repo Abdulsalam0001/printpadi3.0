@@ -30,6 +30,18 @@ export function markScrollRestorePending(): void {
 }
 
 /**
+ * Zero-arg convenience wrapper matching the Next.js call signature
+ * (`onClick={saveScrollPositionForReturn}` on ProductCard etc.).
+ * Reads the current path + window.scrollY, which is accurate for
+ * pages whose IonContent uses default window-scroll behaviour.
+ * Pages with custom scroll containers can call
+ * `saveScrollPositionForReturn(pathname, scrollTop)` directly instead.
+ */
+export function saveCurrentScrollPositionForReturn(): void {
+  saveScrollPositionForReturn(window.location.pathname, window.scrollY);
+}
+
+/**
  * Returns the saved scroll Y for a route, or null if none.
  * Clears the flag and stored value after reading.
  * Exact copy of consumeScrollRestore().

@@ -70,7 +70,13 @@ import AuthError     from './pages/auth/Error';
 import FavoritesBootstrap from './components/FavoritesBootstrap';
 import { useCartStore }       from './store/cartStore';
 
-/* ── Theme ── */
+/* ── Theme ──
+   tailwind.css must load first: it brings in Tailwind's base/utilities
+   plus the @theme tokens that every ported Tailwind className relies on.
+   variables.css / global.css follow for the legacy/custom-CSS components
+   (Carousel.tsx, ContainerWithGradient.tsx, etc.) that are still in the
+   tree but no longer used by the pages. */
+import './theme/tailwind.css';
 import './theme/variables.css';
 import './theme/global.css';
 

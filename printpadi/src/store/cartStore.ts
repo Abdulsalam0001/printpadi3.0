@@ -105,7 +105,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   // ── addItem: exact port ──────────────────────────────────────
-  addItem: ({ product, quantity, options, unitPrice, minQuantity, maxQuantity }) => {
+  addItem: ({ product, quantity, options, unitPrice, minQuantity, maxQuantity, image }) => {
     const itemId = createCartItemId({ product, quantity, options });
 
     set(state => {
@@ -166,7 +166,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         id:          itemId,
         productId:   product.id,
         name:        product.name.trim(),
-        image:       IonImg?? product.images[0] ?? '/shirts.svg',
+        image:       image ?? product.images[0] ?? '/shirts.svg',
         unitPrice:   toMoney(safeUnitPrice),
         quantity:    safeQuantity,
         minQuantity: resolvedMinQuantity,

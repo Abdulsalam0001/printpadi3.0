@@ -47,6 +47,8 @@
     "zustand": "^4.4.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4",
+    "tailwindcss": "^4",
     "@ionic/cli": "^7.2.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
