@@ -1,11 +1,6 @@
-/* ============================================================
-   PrintPadi – Tailwind v4 entry point
-   Exact port of app/globals.css from the Next.js project.
-   This is what makes every Tailwind className string used
-   throughout the ported pages/components actually render.
-   ============================================================ */
-
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 
 :root {
   --background: #ffffff;
@@ -57,7 +52,6 @@ body {
 }
 
 /* ── Fonts (same families referenced by --font-sans / --font-bricolage-grotesque) ── */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 
 :root {
   --font-public-sans: 'Public Sans', sans-serif;
